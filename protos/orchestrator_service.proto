@@ -15,6 +15,7 @@ import "google/protobuf/empty.proto";
 message OrchestrationInstance {
     string instanceId = 1;
     google.protobuf.StringValue executionId = 2;
+    optional string appId = 3;
 }
 
 message ActivityRequest {
@@ -94,6 +95,7 @@ message TaskScheduledEvent {
     google.protobuf.StringValue version = 2;
     google.protobuf.StringValue input = 3;
     TraceContext parentTraceContext = 4;
+    optional string appId = 5;
 }
 
 message TaskCompletedEvent {
@@ -250,12 +252,14 @@ message HistoryEvent {
         EntityLockGrantedEvent entityLockGranted = 28;
         EntityUnlockSentEvent entityUnlockSent = 29;
     }
+    optional string appId = 30;
 }
 
 message ScheduleTaskAction {
     string name = 1;
     google.protobuf.StringValue version = 2;
     google.protobuf.StringValue input = 3;
+    optional string appId = 4;
 }
 
 message CreateSubOrchestrationAction {
@@ -263,6 +267,7 @@ message CreateSubOrchestrationAction {
     string name = 2;
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
+    optional string appId = 5;
 }
 
 message CreateTimerAction {
