@@ -15,7 +15,8 @@ import "google/protobuf/empty.proto";
 message OrchestrationInstance {
     string instanceId = 1;
     google.protobuf.StringValue executionId = 2;
-    optional string appId = 3;
+    optional string appID = 3; // might need this for inside backend/executor.go when executing activity to know originating orchestration appid
+//    optional string appId = 3; //verify if i use the history event that i dont need appid or orchestrationid here
 }
 
 message ActivityRequest {
@@ -96,16 +97,28 @@ message TaskScheduledEvent {
     google.protobuf.StringValue input = 3;
     TraceContext parentTraceContext = 4;
     optional string appId = 5;
+    optional string orchestrationAppId = 6;
 }
 
+// TODO Use this Cassie
+message TaskRouter { // make this optional
+    string source = 5; // orchestrationAppId
+    string target = 6; // appId
+}
+
+// this was the missing linkkkkk
 message TaskCompletedEvent {
     int32 taskScheduledId = 1;
     google.protobuf.StringValue result = 2;
+    optional string appId = 3;
+    optional string orchestrationAppId = 4;
 }
 
 message TaskFailedEvent {
     int32 taskScheduledId = 1;
     TaskFailureDetails failureDetails = 2;
+    optional string appId = 3;
+    optional string orchestrationAppId = 4;
 }
 
 message SubOrchestrationInstanceCreatedEvent {
@@ -114,26 +127,36 @@ message SubOrchestrationInstanceCreatedEvent {
     google.protobuf.StringValue version = 3;
     google.protobuf.StringValue input = 4;
     TraceContext parentTraceContext = 5;
+    optional string appId = 6;
+    optional string orchestrationAppId = 7;
 }
 
 message SubOrchestrationInstanceCompletedEvent {
     int32 taskScheduledId = 1;
     google.protobuf.StringValue result = 2;
+    optional string appId = 3;
+    optional string orchestrationAppId = 4;
 }
 
 message SubOrchestrationInstanceFailedEvent {
     int32 taskScheduledId = 1;
     TaskFailureDetails failureDetails = 2;
+    optional string appId = 3;
+    optional string orchestrationAppId = 4;
 }
 
 message TimerCreatedEvent {
     google.protobuf.Timestamp fireAt = 1;
     optional string name = 2;
+    optional string appId = 3;
+    optional string orchestrationAppId = 4;
 }
 
 message TimerFiredEvent {
     google.protobuf.Timestamp fireAt = 1;
     int32 timerId = 2;
+    optional string appId = 3;
+    optional string orchestrationAppId = 4;
 }
 
 message OrchestratorStartedEvent {
@@ -223,6 +246,8 @@ message EntityLockGrantedEvent {
 message HistoryEvent {
     int32 eventId = 1;
     google.protobuf.Timestamp timestamp = 2;
+    // I think i need appid inside each event type and the history event bc
+    // we psas around the eventtypes, and i need those values to create hisotyr events with
     oneof eventType {
         ExecutionStartedEvent executionStarted = 3;
         ExecutionCompletedEvent executionCompleted = 4;
@@ -252,7 +277,8 @@ message HistoryEvent {
         EntityLockGrantedEvent entityLockGranted = 28;
         EntityUnlockSentEvent entityUnlockSent = 29;
     }
-    optional string appId = 30;
+    optional string appID = 30; //target appid
+    optional string orchestrationAppID = 31;
 }
 
 message ScheduleTaskAction {
@@ -316,6 +342,7 @@ message OrchestratorAction {
         TerminateOrchestrationAction terminateOrchestration = 7;
         SendEntityMessageAction sendEntityMessage = 8;
     }
+    optional string orchestratorAppID = 9;
 }
 
 message OrchestratorRequest {
@@ -325,6 +352,7 @@ message OrchestratorRequest {
     repeated HistoryEvent newEvents = 4;
     OrchestratorEntityParameters entityParameters = 5;
     bool requiresHistoryStreaming = 6;
+    optional string orchestratorAppID = 7;
 }
 
 message OrchestratorResponse {
