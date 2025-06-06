@@ -277,7 +277,9 @@ message HistoryEvent {
         EntityLockGrantedEvent entityLockGranted = 28;
         EntityUnlockSentEvent entityUnlockSent = 29;
     }
-    optional string appID = 30; //target appid
+
+    // task router here
+    optional string appID = 30; // target appid
     optional string orchestrationAppID = 31;
 }
 
