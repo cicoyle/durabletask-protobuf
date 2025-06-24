@@ -262,7 +262,6 @@ message ScheduleTaskAction {
     string name = 1;
     google.protobuf.StringValue version = 2;
     google.protobuf.StringValue input = 3;
-    optional TaskRouter router = 4;
 }
 
 message CreateSubOrchestrationAction {
